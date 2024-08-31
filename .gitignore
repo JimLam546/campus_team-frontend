@@ -1,3 +1,6 @@
+# 忽略文件
+/node_modules/**
+
 # Compiled class file
 *.class
 
