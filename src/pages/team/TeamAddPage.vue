@@ -40,7 +40,8 @@
                 @click="showPicker = true"
             />
             <van-popup v-model:show="showPicker" position="bottom">
-                <van-date-picker @confirm="onConfirm" @cancel="showPicker = false" />
+                <van-date-picker @confirm="onConfirm" @cancel="showPicker = false"
+                                 :min-date="minDate"/>
             </van-popup>
 
 
@@ -81,6 +82,7 @@ import {showFailToast, showSuccessToast} from "vant";
 
 const route = useRoute();
 const router = useRouter();
+const minDate = new Date();
 const team = ref({
     id: route.params.id, // 队伍id
     teamName: '',
@@ -92,7 +94,7 @@ const team = ref({
     teamPassword: '',
 });
 const checked = ref('0');
-const timeResult = ref('');
+const timeResult = ref();
 const showPicker = ref(false);
 const onConfirm = ({ selectedValues }) => {
     timeResult.value = selectedValues.join('/');
@@ -100,6 +102,10 @@ const onConfirm = ({ selectedValues }) => {
     showPicker.value = false;
 };
 const onSubmit = async () => {
+    if(!timeResult.value) {
+        showFailToast('过期时间不能为空');
+        return;
+    }
     team.value.teamStatus = Number(checked.value) // 调整队伍状态类型 string -> number
     const res: resType = await myAxios.post('/team/add', team.value)
     if(res?.code === 0) {

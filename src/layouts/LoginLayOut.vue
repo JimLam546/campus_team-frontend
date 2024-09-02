@@ -56,7 +56,7 @@
             await router.replace('/index')
             showSuccessToast('登录成功');
         } else {
-            showFailToast('账号密码不匹配')
+            showFailToast(res.description)
         }
     }
 const accountVail = () => userAccount.value.length >= 4

@@ -4,6 +4,7 @@
                 v-for="team in props.teamList"
                 :desc="team.description"
                 :title="team.teamName"
+                @click-thumb="showTeamDetail(team.id)"
                 :thumb="team.avatarUrl"
         >
             <template #tags>
@@ -78,6 +79,14 @@ const writePassword = (team: teamType) => {
 }
 const cancel = () => {
     value.value = '';
+}
+const showTeamDetail = (id : number) => {
+    router.push({
+        path: '/team/detail',
+        query: {
+            id: id
+        }
+    })
 }
 const joinTeam = async (team: teamType) => {
     const res: resType = await myAxios.post('/team/join', {teamId: team.id, teamPassword: value.value})

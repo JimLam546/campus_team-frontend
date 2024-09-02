@@ -1,39 +1,59 @@
 <template>
 
-    <div class="img">
+    <div class="img" style="margin-top: 10px">
         <van-uploader :after-read="afterRead">
             <van-image
                     :src="user.avatarUrl"
                     height="10rem"
-                    round
+                    radius="20px"
                     style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
                     width="10rem"
             />
         </van-uploader>
     </div>
 
+    <van-divider />
 
-    <van-cell :value="user.username" is-link title="昵称" @click="toEdit('昵称', 'username', user.username)"/>
-    <van-cell :value="user.userAccount" title="账号"/>
-    <van-cell :value="user.profile" is-link title="个人简介"/>
-    <van-cell is-link title="性别" @click="toRadioEdit('gender', user.gender)">
-        <template #default>
-            <div v-if="user.gender === 1">男</div>
-            <div v-if="user.gender === 0">女</div>
-        </template>
-    </van-cell>
-    <van-cell :value="user.phone" is-link title="联系方式" @click="toEdit('联系方式', 'phone', user.phone)"/>
-    <van-cell :value="user.email" is-link title="邮箱" @click="toEdit('邮箱', 'phone', user.email)"/>
-    <van-cell is-link title="标签" @click="toEditTag( 'tags', user.tags)">
+    <van-cell icon="flag-o" title="标签" :center="true">
         <template #value>
-            <van-tag v-for="tag in user.tagList" plain type="primary">{{ tag }}</van-tag>
+            <van-tag v-for="tag in user.tagList" plain type="primary"
+                     style="margin-right: 8px">{{ tag }}</van-tag>
         </template>
     </van-cell>
-    <van-cell :value="user.createTimeStr" title="注册时间"/>
+
+    <van-grid>
+        <van-grid-item text="创建的队伍" @click="">
+            <template #icon>
+                <van-icon name="friends-o" size="30px" />
+            </template>
+        </van-grid-item>
+        <van-grid-item text="加入的队伍">
+            <template #icon>
+                <van-icon name="user-circle-o" size="30px"/>
+            </template>
+        </van-grid-item>
+        <van-grid-item text="好友列表">
+            <template #icon>
+                <van-icon name="coupon-o" size="30px"/>
+            </template>
+        </van-grid-item>
+        <van-grid-item icon="photo-o" text="联系客服">
+            <template #icon>
+                <van-icon name="service-o" size="30px"/>
+            </template>
+        </van-grid-item>
+    </van-grid>
+    <van-cell title="个人信息" style="padding: 20px" is-link to="/user/sign" :center="true">
+        <template #icon>
+            <van-icon name="setting-o" size="20" style="margin-right: 5px" color="#1989fa"/>
+        </template>
+    </van-cell>
 
     <div style="margin: 20px 20px auto 20px; ">
         <van-button block type="primary" @click="lough">退出登录</van-button>
     </div>
+
+
 </template>
 
 <script lang="ts" setup>
@@ -44,43 +64,43 @@ import {setCurrentUser} from "../storage/userStoage.ts";
 import {showSuccessToast, showToast} from "vant";
 
 const user = ref({});
-const toEdit = (editName: string, editKey: string, currentValue: string) => {
-    router.push({
-        path: '/user/edit',
-        query: {
-            id: user.value.id,
-            editKey: editKey,
-            editName: editName,
-            currentValue: currentValue
-        }
-    })
-}
+// const toEdit = (editName: string, editKey: string, currentValue: string) => {
+//     router.push({
+//         path: '/user/edit',
+//         query: {
+//             id: user.value.id,
+//             editKey: editKey,
+//             editName: editName,
+//             currentValue: currentValue
+//         }
+//     })
+// }
 onMounted(async () => {
     const res = await myAxios.get('/user/current')
     user.value = res.data
     user.value.tagList = JSON.parse(user.value.tags)
     setCurrentUser(user.value)
 })
-const toRadioEdit = (editKey: string, currentValue: string) => {
-    router.push({
-        path: '/user/radioEdit',
-        query: {
-            id: user.value.id,
-            editKey: editKey,
-            currentValue: currentValue
-        }
-    })
-}
-const toEditTag = (editKey: string, currentValue: string) => {
-    router.push({
-        path: '/user/tagEdit',
-        query: {
-            id: user.value.id,
-            editKey: editKey,
-            currentValue: currentValue
-        }
-    })
-}
+// const toRadioEdit = (editKey: string, currentValue: string) => {
+//     router.push({
+//         path: '/user/radioEdit',
+//         query: {
+//             id: user.value.id,
+//             editKey: editKey,
+//             currentValue: currentValue
+//         }
+//     })
+// }
+// const toEditTag = (editKey: string, currentValue: string) => {
+//     router.push({
+//         path: '/user/tagEdit',
+//         query: {
+//             id: user.value.id,
+//             editKey: editKey,
+//             currentValue: currentValue
+//         }
+//     })
+// }
 const lough = () => {
     myAxios.post('/user/lough')
     router.replace('/')

@@ -7,7 +7,10 @@
             <van-tab title="加密" name='secret'></van-tab>
             <van-tab title="我的" name='myTeam'></van-tab>
         </van-tabs>
-        <team-card-list :teamList="teamList" :active="active"/>
+
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+            <team-card-list :teamList="teamList" :active="active"/>
+        </van-pull-refresh>
         <van-empty v-if="teamList?.length < 1" description="数据为空"/>
     </div>
 </template>
@@ -21,6 +24,12 @@ import {setTeamList} from "../../storage/teamListStoage.ts";
 const teamList = ref<teamType[]>([])
 const searchText = ref('')
 const active = ref('public')
+const refreshing = ref(false);
+const onRefresh = async () => {
+    teamList.value = []
+    await onTabChange();
+    refreshing.value = false
+}
 const onTabChange = async () => {
     teamList.value = [];
     if(active.value === 'public') {
