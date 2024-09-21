@@ -3,11 +3,9 @@
     <div class="img">
         <van-image
             :src="team.avatarUrl"
-            height="10rem"
-            radius="20px"
-            style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-                    margin: 10px"
-            width="10rem"
+            radius="10px"
+            style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
+            width="100%"
         />
     </div>
 
@@ -109,11 +107,12 @@ const checked = ref('0');
 const timeResult = ref('');
 const showPicker = ref(false);
 const onConfirm = ({selectedValues}) => {
+    console.log('selectedValues=', selectedValues)
     timeResult.value = selectedValues.join('/');
     showPicker.value = false;
     // console.log('时间',new Date(result.value))
     team.value.expireTime = new Date(timeResult.value)
-    console.log('时间', team.value.expireTime)
+    // console.log('时间', team.value.expireTime)
 };
 
 const getTeam = async () => {
@@ -122,9 +121,12 @@ const getTeam = async () => {
         checked.value = String(res.data.teamStatus) // 将数字状态改为string类型用于绑定单选框
         timeResult.value = res.data.expireTime // 将后端的时间放在选择器中显示
         team.value = res.data
-        team.value.strExpireTime = res.data.expireTime
+        // 修改时间格式
+        team.value.strExpireTime = res.data.expireTime.split(' ')[0]
+        let date = team.value.strExpireTime.split('-')
+        timeResult.value = date.join('/')
+        team.value.expireTime = new Date(timeResult.value)
     }
-    console.log('当前team=', team.value)
 };
 const afterRead = async (file) => {
     let type = file.file.type;

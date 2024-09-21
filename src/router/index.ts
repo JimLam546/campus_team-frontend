@@ -16,6 +16,8 @@ import TagEditPage from "../pages/TagEditPage.vue";
 import UserSignPage from "../pages/UserSignPage.vue";
 import UserDetailPage from "../pages/UserDetailPage.vue";
 import TeamDetailPage from "../pages/team/TeamDetailPage.vue";
+import CreateTeamListPage from "../pages/team/CreateTeamListPage.vue";
+import JoinTeamListPage from "../pages/team/JoinTeamListPage.vue";
 
 
 export const routes = [
@@ -36,6 +38,8 @@ export const routes = [
             {path: '/team/detail', title:'队伍信息',component: TeamDetailPage},
             {path: '/user/sign', title: '个人信息', component: UserSignPage},
             {path: '/user/detail', title: '用户信息', component: UserDetailPage},
+            {path: '/user/myTeam', title: '我创建的队伍', component: CreateTeamListPage},
+            {path: '/user/joinTeam', title: '我加入的队伍', component: JoinTeamListPage},
         ]
     }
 ]

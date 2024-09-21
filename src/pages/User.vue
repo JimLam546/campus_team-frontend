@@ -21,28 +21,38 @@
         </template>
     </van-cell>
 
-    <van-grid>
-        <van-grid-item text="创建的队伍" @click="">
-            <template #icon>
-                <van-icon name="friends-o" size="30px" />
-            </template>
-        </van-grid-item>
-        <van-grid-item text="加入的队伍">
-            <template #icon>
-                <van-icon name="user-circle-o" size="30px"/>
-            </template>
-        </van-grid-item>
-        <van-grid-item text="好友列表">
-            <template #icon>
-                <van-icon name="coupon-o" size="30px"/>
-            </template>
-        </van-grid-item>
-        <van-grid-item icon="photo-o" text="联系客服">
-            <template #icon>
-                <van-icon name="service-o" size="30px"/>
-            </template>
-        </van-grid-item>
-    </van-grid>
+    <!--<van-grid>-->
+    <!--    <van-grid-item text="创建的队伍" @click="toCreateTeamList">-->
+    <!--        <template #icon>-->
+    <!--            <van-icon name="friends-o" size="30px" />-->
+    <!--        </template>-->
+    <!--    </van-grid-item>-->
+    <!--    <van-grid-item text="加入的队伍" @click="toJoinTeamList">-->
+    <!--        <template #icon>-->
+    <!--            <van-icon name="user-circle-o" size="30px"/>-->
+    <!--        </template>-->
+    <!--    </van-grid-item>-->
+    <!--    <van-grid-item text="好友列表">-->
+    <!--        <template #icon>-->
+    <!--            <van-icon name="coupon-o" size="30px"/>-->
+    <!--        </template>-->
+    <!--    </van-grid-item>-->
+    <!--    <van-grid-item icon="photo-o" text="联系客服">-->
+    <!--        <template #icon>-->
+    <!--            <van-icon name="service-o" size="30px"/>-->
+    <!--        </template>-->
+    <!--    </van-grid-item>-->
+    <!--</van-grid>-->
+    <van-cell title="创建的队伍" style="padding: 20px" is-link to="/user/myTeam" :center="true">
+        <template #icon>
+            <van-icon name="friends-o" size="20" style="margin-right: 5px" color="#1989fa"/>
+        </template>
+    </van-cell>
+    <van-cell title="加入的队伍" style="padding: 20px" is-link to="/user/joinTeam" :center="true">
+        <template #icon>
+            <van-icon name="user-circle-o" size="20" style="margin-right: 5px" color="#1989fa"/>
+        </template>
+    </van-cell>
     <van-cell title="个人信息" style="padding: 20px" is-link to="/user/sign" :center="true">
         <template #icon>
             <van-icon name="setting-o" size="20" style="margin-right: 5px" color="#1989fa"/>
@@ -75,6 +85,12 @@ const user = ref({});
 //         }
 //     })
 // }
+const toCreateTeamList = () => {
+    router.push('/user/myTeam');
+}
+const toJoinTeamList = () => {
+    router.push('/user/joinTeam');
+}
 onMounted(async () => {
     const res = await myAxios.get('/user/current')
     user.value = res.data

@@ -36,7 +36,7 @@ const left = () => router.back()
 const onClickRight = () => {
     router.push('/search')
 }
-const onChange = (index) => showToast(`标签 ${index}`);
+// const onChange = (index) => showToast(`标签 ${index}`);
 onMounted(() => {
     router.beforeEach((to, from) => {
         const toPath = to.path;

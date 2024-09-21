@@ -8,7 +8,7 @@
         >
             <UserCardList :user-list="userList"/>
         </van-list>
-        <van-empty description="搜索不到相匹配用户" v-if="!userList || userList.length < 1"/>
+        <!--<van-empty description="搜索不到相匹配用户" v-if="!userList || userList.length < 1 || !isHasResult"/>-->
     </van-pull-refresh>
 
 
@@ -29,6 +29,7 @@ const refreshing = ref(false)
 const currentPage = ref(0)
 const userList = ref([]) // 展示搜索的用户列表
 const { tags } = route.query
+const isHasResult = ref(true)
 const listLoad = async () => {
     currentPage.value++;
     await getUserList();
@@ -58,6 +59,7 @@ const getUserList = async () => {
         showFailToast('网络异常')
     }
     if (res?.data.length === 0) {
+        isHasResult.value = false;
         finished.value = true;
     }
     for (let i = 0; i < res?.data.length; i++) {
