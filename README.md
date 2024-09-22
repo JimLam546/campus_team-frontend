@@ -1,17 +1,13 @@
-# Vant-Ui2官网
-https://vant-ui.github.io/vant/v2/#/zh-CN/notice-bar
-# vant-ui vue3的github网
-https://vant-ui.github.io/vant/#/zh-CN
+# campus_team-frontend
 
-## todo 完善
-1. 性别选择后保存传后端
-2. 每个页面的标题切换
+#### 项目介绍
+校园伙伴匹配平台，基于 Vue3 + Spring Boot 2 的移动端网站，实现了用户管理、按标签检索用户、推荐相似用户、组队等功能。
+后端使用 SpringBoot+ MyBatis-Plus + MySQL + Redis 等技术,结合**阿里云OSS**完成图片上传。
 
-## 2024/04/27
-### 收获
-1. 后端跨域注解了解
-2. axios的qs库干嘛的了解一下
-### 未完成
-1. 前端发送axios请求到后端 √
-2. 前端将后端的json字符串转成数组 √
-3. 前端搜索不到用户时有个页面提示 √
+#### 在线体验
+http://47.115.163.154:5173
+账号可以自行注册，也可以使用以下账号进行体验
+- 账号：123456789
+- 密码：123456789
+
+
