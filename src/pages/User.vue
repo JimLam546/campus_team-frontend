@@ -127,7 +127,7 @@ const afterRead = async (file) => {
     const formData = new FormData();
     formData.append('file', file.file); // 将文件对象添加到 FormData 对象中
     if(type === 'image/jpeg' || type === 'image/png') {
-        console.log(file)
+        // console.log(file)
         let res: resType = await myAxios.post('/user/uploadAvatar', {'file': file.file}, {headers: {"Content-Type": "multipart/form-data"}});
         if(res?.code === 0) {
             showSuccessToast('上传成功');

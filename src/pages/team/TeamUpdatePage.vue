@@ -107,7 +107,7 @@ const checked = ref('0');
 const timeResult = ref('');
 const showPicker = ref(false);
 const onConfirm = ({selectedValues}) => {
-    console.log('selectedValues=', selectedValues)
+    // console.log('selectedValues=', selectedValues)
     timeResult.value = selectedValues.join('/');
     showPicker.value = false;
     // console.log('时间',new Date(result.value))
@@ -133,7 +133,7 @@ const afterRead = async (file) => {
     const formData = new FormData();
     formData.append('file', file.file); // 将文件对象添加到 FormData 对象中
     if(type === 'image/jpeg' || type === 'image/png') {
-        console.log(file)
+        // console.log(file)
         let res: resType = await myAxios.post('/team/uploadAvatar', {'file': file.file, teamId: team.value.id}, {headers: {"Content-Type": "multipart/form-data"}});
         if(res?.code === 0) {
             showSuccessToast('上传成功');
@@ -154,7 +154,7 @@ const onSubmit = async () => {
     } else {
         showFailToast('操作失败')
     }
-    console.log(res)
+    // console.log(res)
 }
 onMounted(() => {
     getTeam();

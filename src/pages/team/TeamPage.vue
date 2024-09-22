@@ -35,7 +35,7 @@ const onTabChange = async () => {
     if(active.value === 'public') {
         // 公开
         const res: resType = await myAxios.get('/team/list/page',{params: {searchText: searchText.value, teamStatus: 0}})
-        console.log(res.data)
+        // console.log(res.data)
         if(res?.code === 0) {
             teamList.value = res.data
         }
@@ -50,7 +50,7 @@ const onTabChange = async () => {
         const res: resType = await myAxios.get('/team/list/myTeam')
         if(res?.code === 0) {
             teamList.value = res.data
-            console.log('teamList=',res.data)
+            // console.log('teamList=',res.data)
         }
     }
     setTeamList(teamList.value)

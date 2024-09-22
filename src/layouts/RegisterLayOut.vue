@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import myAxios from "../libs/axiosRequest.ts";
-import {showLoadingToast, showSuccessToast, Toast} from "vant";
+import {closeToast, showFailToast, showLoadingToast, showSuccessToast, Toast} from "vant";
 import { ref } from 'vue'
 import { useRouter } from "vue-router";
 
@@ -61,6 +61,7 @@ const userPassword = ref('')
 const checkPassword = ref('')
 const onSubmit = async () => {
     showLoadingToast({
+        duration: 0,
         message: '加载中...',
         forbidClick: true,
     });
@@ -76,7 +77,7 @@ const onSubmit = async () => {
         await router.replace('/login')
         showSuccessToast('注册成功');
     } else {
-        Toast.fail('注册失败')
+        showFailToast(res.description);
     }
 }
 const accountVail = () => userAccount.value.length >= 4

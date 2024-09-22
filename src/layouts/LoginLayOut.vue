@@ -52,7 +52,7 @@
         })
         if(res.code === 0) {
             // 登录成功
-            console.log(res.code)
+            // console.log(res.code)
             await router.replace('/index')
             showSuccessToast('登录成功');
         } else {

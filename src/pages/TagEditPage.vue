@@ -123,7 +123,7 @@
       })
   }
   const submitTags = async () => {
-      console.log(JSON.stringify(activeIds.value))
+      // console.log(JSON.stringify(activeIds.value))
       const res: resType = await myAxios({
           method: 'post',
           url: '/user/modifyTags',

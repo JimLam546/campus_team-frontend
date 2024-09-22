@@ -26,11 +26,9 @@
             </div>
         </template>
     </van-skeleton>
-
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-        <UserCardList :user-list="userList"/>
-    </van-pull-refresh>
-
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+            <UserCardList :user-list="userList"/>
+        </van-pull-refresh>
     <!--回到顶部-->
     <van-back-top right="20px" bottom="60px"/>
 
@@ -50,7 +48,7 @@ const images = ref([
     'https://jim-one-project.oss-cn-shenzhen.aliyuncs.com/wallpaper/5.jpg',
 ]);
 const userList = ref<UserType[]>([]);
-const currentPage = ref(0);
+const currentPage = ref(1);
 const checked = ref(false);
 const refreshing = ref(false);
 const onRefresh = async () => {
