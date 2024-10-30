@@ -42,7 +42,8 @@
     const userPassword = ref('')
     const onSubmit = async () => {
         showLoadingToast({
-            message: '加载中...',
+            duration: 0,
+            message: '登录中...',
             forbidClick: true,
         });
 

@@ -1,84 +1,124 @@
 <template>
     <div class="img">
-      <van-image
-              :src="user.avatarUrl"
-              height="10rem"
-              round
-              style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
-              width="10rem"
-      />
+        <van-image
+                :src="user.avatarUrl"
+                height="10rem"
+                round
+                style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"
+                width="10rem"
+        />
     </div>
     <van-cell icon="contact-o">
         <van-icon name="contact-o"/>
         <template #title>
             <span>昵称</span>
         </template>
-        <template #value v-if="user.username">
-            <span>{{user.username}}</span>
+        <template v-if="user.username" #value>
+            <span>{{ user.username }}</span>
         </template>
-        <template #value v-else>
+        <template v-else #value>
             该用户未设置昵称
         </template>
     </van-cell>
     <van-cell icon="description-o" title="个人简介">
-        <template #value v-if="user.profile">
-            {{user.profile}}
+        <template v-if="user.profile" #value>
+            {{ user.profile }}
         </template>
-        <template #value v-else>
+        <template v-else #value>
             该用户很懒，没有填写简介
         </template>
     </van-cell>
     <van-cell icon="flag-o" title="性别">
-        <template #value v-if="user.gender">
+        <template v-if="user.gender" #value>
             <div v-if="user.gender === 1">男</div>
             <div v-if="user.gender === 0">女</div>
         </template>
-        <template #value v-else>
+        <template v-else #value>
             保密
         </template>
     </van-cell>
-    <van-cell icon="phone-o" :value="user.phone" title="联系方式">
-        <template #value v-if="user.phone">
-            {{user.phone}}
+    <van-cell :value="user.phone" icon="phone-o" title="联系方式">
+        <template v-if="user.phone" #value>
+            {{ user.phone }}
         </template>
-        <template #value v-else>
+        <template v-else #value>
             该用户未填写联系方式
         </template>
     </van-cell>
-    <van-cell icon="envelop-o" :value="user.email" title="邮箱">
-        <template #value v-if="user.email">
-            {{user.email}}
+    <van-cell :value="user.email" icon="envelop-o" title="邮箱">
+        <template v-if="user.email" #value>
+            {{ user.email }}
         </template>
-        <template #value v-else>
+        <template v-else #value>
             该用户未填写邮箱
         </template>
     </van-cell>
     <van-cell icon="flag-o" title="标签">
         <template #value>
-            <van-tag v-for="tag in user.tagList" plain type="primary"
-                     style="margin-right: 8px">{{ tag }}</van-tag>
+            <van-tag v-for="tag in user.tagList" plain style="margin-right: 8px"
+                     type="primary">{{ tag }}
+            </van-tag>
         </template>
     </van-cell>
+    <div style="margin: 20px 20px auto 20px; ">
+        <van-button v-if="!user.friend" block round type="primary" @click="addFriend">添加好友</van-button>
+    </div>
+
+    <van-dialog :show="show" before-close="" show-cancel-button
+                title="好友申请" @cancel="cancelDialog" @confirm="confirmDialog">
+        <van-cell-group inset>
+            <van-field
+                    v-model="remark"
+                    autosize
+                    maxlength="50"
+                    placeholder="请输入申请语"
+                    rows="2"
+                    show-word-limit
+                    type="textarea"
+            />
+        </van-cell-group>
+
+    </van-dialog>
 </template>
 
 <script lang="ts" setup>
 import myAxios from "../libs/axiosRequest.ts";
-import {showFailToast} from "vant";
+import {showFailToast, showSuccessToast} from "vant";
 import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 
 const user = ref({})
 let route = useRoute();
+const show = ref(false);
+const remark = ref("");
+const addFriend = async () => {
+    show.value = true;
+}
+
+const cancelDialog = () => {
+    show.value = false;
+    remark.value = "";
+}
+const confirmDialog = async () => {
+    let res : resType = await myAxios.post('/request/addFriend',
+        {receiveId: route.query.id, remark: remark.value});
+    show.value = false;
+    if(res.code === 0) {
+        showSuccessToast('发送好友申请成功');
+    } else {
+        showFailToast(res.message);
+    }
+}
 onMounted(async () => {
     // console.log(route.query.id)
-    let res : resType= await myAxios.get('/user/query/' + route.query.id);
+    let res: resType = await myAxios.get('/user/query/' + route.query.id);
     if (res?.code !== 0) {
         showFailToast('该用户不存在');
     }
     // console.log(res.data)
     user.value = res.data;
     user.value.tagList = JSON.parse(res.data?.tags)
-    // console.log(user.value)
+    console.log(res.data)
 })
 </script>
 

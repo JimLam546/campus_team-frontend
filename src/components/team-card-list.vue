@@ -56,7 +56,7 @@ import {teamStatusEnum} from "../constants/team.ts";
 import myAxios from "../libs/axiosRequest.ts";
 import {showFailToast, showSuccessToast} from "vant";
 import {useRouter} from "vue-router";
-import {onBeforeUpdate, onMounted, onUpdated, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {getCurrentUser} from "../services/user.ts";
 import {setCurrentUser} from "../storage/userStoage.ts";
 import {getTeamList} from "../storage/teamListStoage.ts";

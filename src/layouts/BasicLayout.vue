@@ -15,9 +15,10 @@
         <router-view/>
     </div>
 
-    <van-tabbar route @change="onChange">
+    <van-tabbar route @change="">
         <van-tabbar-item icon="home-o" replace to="/index">主页</van-tabbar-item>
         <van-tabbar-item icon="search" replace to="/team">队伍</van-tabbar-item>
+        <van-tabbar-item icon="chat-o" replace to="/message">消息</van-tabbar-item>
         <van-tabbar-item icon="friends-o" replace to="/user">个人</van-tabbar-item>
     </van-tabbar>
 
@@ -25,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-import {showToast} from "vant";
 import {useRouter} from "vue-router";
 import {routes} from "../router"
 import {onMounted, ref} from "vue";

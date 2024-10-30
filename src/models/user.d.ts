@@ -13,6 +13,7 @@ type UserType = {
     userRole: number;
     tags: string;
     createTime: Date;
-    createTimeStr: string
-    tagList?: []
+    createTimeStr: string;
+    tagList?: [];
+    friend: boolean;
 }

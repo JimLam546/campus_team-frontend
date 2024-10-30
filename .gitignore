@@ -1,6 +1,7 @@
 # 忽略文件
 /node_modules/**
 /dist/
+/.idea/
 
 # Compiled class file
 *.class

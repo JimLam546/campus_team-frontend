@@ -62,7 +62,7 @@ const checkPassword = ref('')
 const onSubmit = async () => {
     showLoadingToast({
         duration: 0,
-        message: '加载中...',
+        message: '注册中...',
         forbidClick: true,
     });
 

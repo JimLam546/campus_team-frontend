@@ -18,6 +18,10 @@ import UserDetailPage from "../pages/UserDetailPage.vue";
 import TeamDetailPage from "../pages/team/TeamDetailPage.vue";
 import CreateTeamListPage from "../pages/team/CreateTeamListPage.vue";
 import JoinTeamListPage from "../pages/team/JoinTeamListPage.vue";
+import MessageIndex from "../pages/message/messagePage.vue";
+import friendRequestPage from "../pages/message/friendRequestPage.vue";
+import privateMessagePage from "../pages/message/privateMessagePage.vue";
+import groupChatPage from "../pages/message/groupChatPage.vue";
 
 
 export const routes = [
@@ -40,6 +44,10 @@ export const routes = [
             {path: '/user/detail', title: '用户信息', component: UserDetailPage},
             {path: '/user/myTeam', title: '我创建的队伍', component: CreateTeamListPage},
             {path: '/user/joinTeam', title: '我加入的队伍', component: JoinTeamListPage},
+            {path: '/message', title: '消息', component: MessageIndex},
+            {path: '/message/friendRequest', title: '好友申请', component: friendRequestPage},
+            {path: '/message/privateMessage', title: '私信', component: privateMessagePage},
+            {path: '/message/groupChat', title: '群聊', component: groupChatPage},
         ]
     }
 ]
