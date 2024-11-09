@@ -23,7 +23,7 @@
               <span class="cell-span">新好友消息通知</span>
           </template>
       </van-cell>
-      <van-cell to="/message/privateMessage">
+      <van-cell to="/message/privateChatList">
           <template #title>
               <span class="cell-span">私聊</span>
           </template>

@@ -1,40 +1,41 @@
 <template>
-    <van-cell center title="推荐用户">
-        <template #right-icon>
-            <span>匹配模式</span>
-            <van-switch v-model="checked" @click="recommend"/>
-        </template>
-    </van-cell>
+    <div id="userPage">
+        <van-cell center title="推荐用户">
+            <template #right-icon>
+                <span>匹配模式</span>
+                <van-switch v-model="checked" @click="recommend"/>
+            </template>
+        </van-cell>
 
-    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" style="border-radius: 5%;margin: 15px">
-        <van-swipe-item v-for="image in images" :key="image">
-            <img :src="image" style="width: 100%">
-        </van-swipe-item>
-    </van-swipe>
+        <van-swipe :autoplay="3000" class="my-swipe" indicator-color="white" style="border-radius: 5%;margin: 15px">
+            <van-swipe-item v-for="image in images" :key="image">
+                <img :src="image" style="width: 100%">
+            </van-swipe-item>
+        </van-swipe>
 
-    <!--<van-search v-model="searchText" placeholder="请输入搜索关键词" @search="searchUsers"/>-->
-    <van-skeleton v-if="!userList || userList.length < 1">
-        <template #template>
-            <div :style="{ display: 'flex', width: '100%' }">
-                <van-skeleton-image />
-                <div :style="{ flex: 1, marginLeft: '16px' }">
-                    <van-skeleton-paragraph row-width="60%" />
-                    <van-skeleton-paragraph />
-                    <van-skeleton-paragraph />
-                    <van-skeleton-paragraph />
+        <!--<van-search v-model="searchText" placeholder="请输入搜索关键词" @search="searchUsers"/>-->
+        <van-skeleton v-if="!userList || userList.length < 1">
+            <template #template>
+                <div :style="{ display: 'flex', width: '100%' }">
+                    <van-skeleton-image/>
+                    <div :style="{ flex: 1, marginLeft: '16px' }">
+                        <van-skeleton-paragraph row-width="60%"/>
+                        <van-skeleton-paragraph/>
+                        <van-skeleton-paragraph/>
+                        <van-skeleton-paragraph/>
+                    </div>
                 </div>
-            </div>
-        </template>
-    </van-skeleton>
+            </template>
+        </van-skeleton>
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
             <UserCardList :user-list="userList"/>
         </van-pull-refresh>
-    <!--回到顶部-->
-    <van-back-top right="20px" bottom="60px"/>
-
+        <!--回到顶部-->
+        <van-back-top bottom="60px" right="20px"/>
+    </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import UserCardList from "../components/UserCardList.vue";
 import myAxios from "../libs/axiosRequest.ts";
 import {onMounted, ref} from "vue";
@@ -58,9 +59,9 @@ const onRefresh = async () => {
 }
 const recommend = async () => {
     userList.value = []
-    if(checked.value) {
-        const res: resType  = await myAxios.get('/user/match', {params: {num: 10}})
-        if(res?.code === 0) {
+    if (checked.value) {
+        const res: resType = await myAxios.get('/user/match', {params: {num: 10}})
+        if (res?.code === 0) {
             for (let i = 0; i < res?.data.length; i++) {
                 userList.value.push(res?.data[i])
             }
@@ -69,7 +70,7 @@ const recommend = async () => {
         }
     } else {
         const res: resType = await myAxios.get('/user/recommend', {params: {pageNum: currentPage.value, pageSize: 20}})
-        if(res?.code === 0) {
+        if (res?.code === 0) {
             for (let i = 0; i < res?.data.length; i++) {
                 userList.value.push(res?.data[i])
             }
@@ -83,6 +84,5 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-
+<style>
 </style>

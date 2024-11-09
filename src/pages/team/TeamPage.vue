@@ -77,18 +77,18 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
-    .btn_createTeam{
-        position: fixed;
-        height: 50px;
-        width: 50px;
-        right: 10px;
-        bottom: 55px;
-        top: auto;
-        z-index: 1;
-        border-radius: 100%;
-    }
-    .teamList-card{
-        margin-bottom: 50px;
-    }
+<style>
+.btn_createTeam{
+    position: fixed;
+    height: 50px;
+    width: 50px;
+    right: 10px;
+    bottom: 55px;
+    top: auto;
+    z-index: 1;
+    border-radius: 100%;
+}
+.teamList-card{
+    margin-bottom: 50px;
+}
 </style>

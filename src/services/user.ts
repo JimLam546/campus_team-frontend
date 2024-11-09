@@ -7,3 +7,10 @@ export const getCurrentUser = async () => {
     }
     return null;
 }
+export const getUser = async (id: any) => {
+    const res: resType = await myAxios.get("/user/query/" + id);
+    if (res?.code === 0) {
+        return res.data;
+    }
+    return null;
+}

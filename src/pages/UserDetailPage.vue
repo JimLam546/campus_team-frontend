@@ -62,6 +62,7 @@
     </van-cell>
     <div style="margin: 20px 20px auto 20px; ">
         <van-button v-if="!user.friend" block round type="primary" @click="addFriend">添加好友</van-button>
+        <van-button v-else plain block round type="danger" @click="removeFriend">解除好友</van-button>
     </div>
 
     <van-dialog :show="show" before-close="" show-cancel-button
@@ -94,7 +95,9 @@ const remark = ref("");
 const addFriend = async () => {
     show.value = true;
 }
-
+const removeFriend = async () => {
+    showFailToast("功能待开发....")
+}
 const cancelDialog = () => {
     show.value = false;
     remark.value = "";

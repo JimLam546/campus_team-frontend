@@ -9,6 +9,9 @@
             style="margin: 15px; border-radius: 8%"
         >
             <template #bottom>
+                <div>
+                    申请时间: {{request.createTime}}
+                </div>
                 <van-button plain size="mini" type="primary" @click="opsFriend(request.fromUserVO.id, 1)"
                             v-if="request.state === 0"
                             style="width: 40%"

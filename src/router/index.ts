@@ -21,7 +21,8 @@ import JoinTeamListPage from "../pages/team/JoinTeamListPage.vue";
 import MessageIndex from "../pages/message/messagePage.vue";
 import friendRequestPage from "../pages/message/friendRequestPage.vue";
 import privateMessagePage from "../pages/message/privateMessagePage.vue";
-import groupChatPage from "../pages/message/groupChatPage.vue";
+import ChatPage from "../pages/message/ChatPage.vue";
+import privateChatUserListPage from "../pages/message/privateChatUserListPage.vue";
 
 
 export const routes = [
@@ -46,10 +47,12 @@ export const routes = [
             {path: '/user/joinTeam', title: '我加入的队伍', component: JoinTeamListPage},
             {path: '/message', title: '消息', component: MessageIndex},
             {path: '/message/friendRequest', title: '好友申请', component: friendRequestPage},
-            {path: '/message/privateMessage', title: '私信', component: privateMessagePage},
-            {path: '/message/groupChat', title: '群聊', component: groupChatPage},
+            {path: '/message/privateChatList', title: '私聊用户列表', component: privateChatUserListPage},
+            // {path: '/message/groupChat', title: '群聊', component: groupChatPage},
+            {path: '/message/groupChat', title: '群聊', component: ChatPage},
         ]
-    }
+    },
+    {path: '/message/privateMessage', title: '私信', component: privateMessagePage},
 ]
 
 
