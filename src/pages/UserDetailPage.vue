@@ -60,7 +60,8 @@
             </van-tag>
         </template>
     </van-cell>
-    <div style="margin: 20px 20px auto 20px; ">
+    <div v-if="currentUser.id !== user.id" style="margin: 20px 20px auto 20px; ">
+        <van-button v-if="user.friend" plain block round type="primary" @click="toChat" style="margin-bottom: 10px">私信</van-button>
         <van-button v-if="!user.friend" block round type="primary" @click="addFriend">添加好友</van-button>
         <van-button v-else plain block round type="danger" @click="removeFriend">解除好友</van-button>
     </div>
@@ -87,15 +88,20 @@ import myAxios from "../libs/axiosRequest.ts";
 import {showFailToast, showSuccessToast} from "vant";
 import {onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
+import {getCurrentUser} from "../services/user.ts";
 
 const user = ref({})
 let route = useRoute();
 const show = ref(false);
 const remark = ref("");
+const currentUser = ref({});
 const addFriend = async () => {
     show.value = true;
 }
 const removeFriend = async () => {
+    showFailToast("功能待开发....")
+}
+const toChat = () => {
     showFailToast("功能待开发....")
 }
 const cancelDialog = () => {
@@ -112,16 +118,22 @@ const confirmDialog = async () => {
         showFailToast(res.message);
     }
 }
+const getLoginUser = async () => {
+    const res = await getCurrentUser();
+    if (res) {
+        currentUser.value = res;
+        return;
+    }
+    showFailToast("获取登录用户信息失败");
+}
 onMounted(async () => {
-    // console.log(route.query.id)
     let res: resType = await myAxios.get('/user/query/' + route.query.id);
     if (res?.code !== 0) {
         showFailToast('该用户不存在');
     }
-    // console.log(res.data)
     user.value = res.data;
     user.value.tagList = JSON.parse(res.data?.tags)
-    console.log(res.data)
+    await getLoginUser();
 })
 </script>
 

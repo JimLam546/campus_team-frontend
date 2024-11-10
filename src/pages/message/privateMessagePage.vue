@@ -34,7 +34,7 @@
 
 <script setup>
 import {onMounted, ref, nextTick} from "vue";
-import {getUser} from "../../services/user.ts";
+import {getCurrentUser, getUser} from "../../services/user.ts";
 import {useRoute, useRouter} from "vue-router";
 import {showFailToast} from "vant";
 import {getPrivateMessageList} from "../../services/chat.ts";
@@ -43,10 +43,20 @@ const route = useRoute();
 const router = useRouter();
 const remoteUser = ref({});
 const chatRoom = ref();
+const currentUser = ref();
 const state = ref({
     text: "",
     content: "",
+    ws: null,
 })
+const getLoginUser = async () => {
+    const res = await getCurrentUser();
+    if (res) {
+        currentUser.value = res;
+        return;
+    }
+    showFailToast("获取当前登录用户信息失败");
+}
 const getRemoteUser = async () => {
     const res = await getUser(route.query.id);
     if (res) {
@@ -62,9 +72,27 @@ const onClickRight = () => {
         query: {
             id: route.query.id
         }
-})}
+    });
+}
+const PRIVATE_CHAT = 1;
 const send = () => {
-    showFailToast("待开发...")
+    if (!state.value.text.trim()) {
+        showFailToast("请输入内容");
+        return;
+    }
+    let message = {
+        toId: route.query.id,
+        text: state.value.text,
+        chatType: PRIVATE_CHAT,
+        isAdmin: false,
+    }
+    state.value.ws.send(JSON.stringify(message));
+    createContent(null, currentUser.value, state.value.text);
+    state.value.text = "";
+    nextTick(() => {
+        const lastElement = chatRoom.value.lastElementChild
+        lastElement.scrollIntoView()
+    })
 }
 const messageList = ref([]);
 // 获取私聊消息
@@ -80,19 +108,16 @@ const getPrivateMessage = async () => {
 const renderPage = async () => {
     await getPrivateMessage();
     messageList.value.forEach((chat) => {
-        if (chat.isMyMessage) {
+        if (chat.myMessage) {
             createContent(null, chat.fromUser, chat.text, false, chat.createTime);
         } else {
-            createContent(chat.toUser, null, chat.text, false, chat.createTime);
+            createContent(chat.fromUser, null, chat.text, false, chat.createTime);
         }
     })
-    // init()
-    // await nextTick()
-    // const lastElement = chatRoom.value.lastElementChild
-    // lastElement.scrollIntoView()
-}
-const showUser = (id) => {
-    showFailToast("展示用户细节，还未实现")
+    await init();
+    await nextTick();
+    const lastElement = chatRoom.value.lastElementChild;
+    lastElement.scrollIntoView();
 }
 const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
     // 当前用户消息
@@ -119,14 +144,45 @@ const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
     </div>
 `
     }
-    console.log("html=", html)
+    // console.log("html=", html)
     state.value.content += html;
 }
-window.showUser = showUser
+window.showUser = onClickRight;
+const init = async () => {
+    await getLoginUser();
+    // 建立 WebSocket
+    const ws = new WebSocket("ws://localhost:8080/chat/" + `${currentUser.value.id}/NaN`);
+    state.value.ws = ws;
+    ws.onopen = () => {
+        // 开启心跳
+        startHeartbeat(ws);
+    }
+    ws.onmessage = (msg) => {
+        if (msg.data === "PONG") {
+            return;
+        }
+        // 解析成 json 对象
+        let data = JSON.parse(msg.data);
+        console.log("接收的内容:", data);
+        createContent(data.fromUser, null, data.text, data.isAdmin, data.createTime);
+        nextTick(() => {
+            const lastElement = chatRoom.value.lastElementChild
+            lastElement.scrollIntoView()
+        })
+    }
+}
+const startHeartbeat = (ws) => {
+
+    setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send("PING");
+        }
+    }, 10 * 1000); // 30 秒
+}
 onMounted(() => {
+    getLoginUser();
     getRemoteUser();
     renderPage();
-    console.log(state.value.content)
 })
 </script>
 
@@ -152,6 +208,10 @@ onMounted(() => {
     flex-direction: column
 }
 
+.self {
+    align-self: flex-end;
+}
+
 .avatar {
     align-self: flex-start;
     width: 35px;
@@ -159,24 +219,6 @@ onMounted(() => {
     border-radius: 50%;
     margin-right: 10px;
     margin-left: 10px;
-}
-
-.text {
-    margin-top: 0;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: #eee;
-    word-wrap: break-word;
-    word-break: break-all;
-}
-
-.other .text {
-    align-self: flex-start;
-}
-
-.self .text {
-    background-color: #0084ff;
-    color: #fff;
 }
 
 .username {
@@ -200,5 +242,23 @@ onMounted(() => {
 
 .myInfo {
     align-self: flex-start;
+}
+
+.text {
+    margin-top: 0;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #eee;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.other .text {
+    align-self: flex-start;
+}
+
+.self .text {
+    background-color: #0084ff;
+    color: #fff;
 }
 </style>
