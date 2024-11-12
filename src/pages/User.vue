@@ -12,19 +12,20 @@
         </van-uploader>
     </div>
 
-    <van-divider />
+    <van-divider/>
 
-    <van-cell icon="flag-o" title="标签" :center="true">
+    <van-cell :center="true" icon="flag-o" title="标签">
         <template #value>
-            <van-tag v-for="tag in user.tagList" plain type="primary"
-                     style="margin-right: 8px">{{ tag }}</van-tag>
+            <van-tag v-for="tag in user.tagList" plain style="margin-right: 8px"
+                     type="primary">{{ tag }}
+            </van-tag>
         </template>
     </van-cell>
 
     <van-grid>
         <van-grid-item text="创建的队伍" @click="toCreateTeamList">
             <template #icon>
-                <van-icon name="friends-o" size="30px" />
+                <van-icon name="friends-o" size="30px"/>
             </template>
         </van-grid-item>
         <van-grid-item text="加入的队伍" @click="toJoinTeamList">
@@ -32,7 +33,7 @@
                 <van-icon name="user-circle-o" size="30px"/>
             </template>
         </van-grid-item>
-        <van-grid-item text="好友列表">
+        <van-grid-item text="好友列表" @click="toFriendList">
             <template #icon>
                 <van-icon name="coupon-o" size="30px"/>
             </template>
@@ -43,19 +44,19 @@
             </template>
         </van-grid-item>
     </van-grid>
-    <!--<van-cell title="创建的队伍" style="padding: 20px" is-link to="/user/myTeam" :center="true">-->
-    <!--    <template #icon>-->
-    <!--        <van-icon name="friends-o" size="20" style="margin-right: 5px" color="#1989fa"/>-->
-    <!--    </template>-->
-    <!--</van-cell>-->
-    <!--<van-cell title="加入的队伍" style="padding: 20px" is-link to="/user/joinTeam" :center="true">-->
-    <!--    <template #icon>-->
-    <!--        <van-icon name="user-circle-o" size="20" style="margin-right: 5px" color="#1989fa"/>-->
-    <!--    </template>-->
-    <!--</van-cell>-->
-    <van-cell title="个人信息" style="padding: 20px" is-link to="/user/sign" :center="true">
+  <!--<van-cell title="创建的队伍" style="padding: 20px" is-link to="/user/myTeam" :center="true">-->
+  <!--    <template #icon>-->
+  <!--        <van-icon name="friends-o" size="20" style="margin-right: 5px" color="#1989fa"/>-->
+  <!--    </template>-->
+  <!--</van-cell>-->
+  <!--<van-cell title="加入的队伍" style="padding: 20px" is-link to="/user/joinTeam" :center="true">-->
+  <!--    <template #icon>-->
+  <!--        <van-icon name="user-circle-o" size="20" style="margin-right: 5px" color="#1989fa"/>-->
+  <!--    </template>-->
+  <!--</van-cell>-->
+    <van-cell :center="true" is-link style="padding: 20px" title="个人信息" to="/user/sign">
         <template #icon>
-            <van-icon name="setting-o" size="20" style="margin-right: 5px" color="#1989fa"/>
+            <van-icon color="#1989fa" name="setting-o" size="20" style="margin-right: 5px"/>
         </template>
     </van-cell>
 
@@ -72,8 +73,10 @@ import {onMounted, ref} from 'vue'
 import myAxios from "../libs/axiosRequest.ts";
 import {setCurrentUser} from "../storage/userStoage.ts";
 import {showSuccessToast, showToast} from "vant";
+import {useRoute} from "vue-router";
 
 const user = ref({});
+const route = useRoute();
 // const toEdit = (editName: string, editKey: string, currentValue: string) => {
 //     router.push({
 //         path: '/user/edit',
@@ -126,10 +129,10 @@ const afterRead = async (file) => {
     let type = file.file.type;
     const formData = new FormData();
     formData.append('file', file.file); // 将文件对象添加到 FormData 对象中
-    if(type === 'image/jpeg' || type === 'image/png') {
+    if (type === 'image/jpeg' || type === 'image/png') {
         // console.log(file)
         let res: resType = await myAxios.post('/user/uploadAvatar', {'file': file.file}, {headers: {"Content-Type": "multipart/form-data"}});
-        if(res?.code === 0) {
+        if (res?.code === 0) {
             showSuccessToast('上传成功');
             location.reload();
             return true;
@@ -138,6 +141,11 @@ const afterRead = async (file) => {
         return false;
     }
     showToast('请上传 jpg/png 格式图片');
+}
+const toFriendList = async () => {
+    await router.push({
+        path: "/user/friendList",
+    })
 }
 </script>
 

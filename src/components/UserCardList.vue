@@ -21,26 +21,35 @@
                 {{ tag }}
             </van-tag>
         </template>
-        <!--<template #footer>-->
-        <!--    <van-button size="mini">联系我</van-button>-->
-        <!--</template>-->
+        <template #footer>
+            <van-button plain size="small" @click="toChat(user.id)">联系我</van-button>
+        </template>
     </van-card>
 </template>
 
 <script setup lang="ts">
 
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
 interface userCardListProps{
     userList: UserType[]
 }
 const props = defineProps<userCardListProps>()
+const route = useRoute()
 let router = useRouter()
 const showUserDetail = (id : any) => {
     router.push({
         path: '/user/detail',
         query: {
             id: id
+        }
+    })
+}
+const toChat = (id) => {
+    router.push({
+        path: "/message/privateMessage",
+        query: {
+            id: id,
         }
     })
 }

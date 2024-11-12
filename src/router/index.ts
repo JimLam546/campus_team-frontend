@@ -21,8 +21,9 @@ import JoinTeamListPage from "../pages/team/JoinTeamListPage.vue";
 import MessageIndex from "../pages/message/messagePage.vue";
 import friendRequestPage from "../pages/message/friendRequestPage.vue";
 import privateMessagePage from "../pages/message/privateMessagePage.vue";
-import ChatPage from "../pages/message/ChatPage.vue";
-import privateChatUserListPage from "../pages/message/privateChatUserListPage.vue";
+import ChatPage from "../pages/message/teamChatListPage.vue";
+import privateChatUserListPage from "../pages/message/privateChatListPage.vue";
+import friendListPage from "../pages/friendListPage.vue";
 
 
 export const routes = [
@@ -48,7 +49,7 @@ export const routes = [
             {path: '/message', title: '消息', component: MessageIndex},
             {path: '/message/friendRequest', title: '好友申请', component: friendRequestPage},
             {path: '/message/privateChatList', title: '私聊用户列表', component: privateChatUserListPage},
-            // {path: '/message/groupChat', title: '群聊', component: groupChatPage},
+            {path: '/user/friendList', title: '我的好友', component: friendListPage},
             {path: '/message/groupChat', title: '群聊', component: ChatPage},
         ]
     },

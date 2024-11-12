@@ -8,11 +8,13 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     MessageCardList: typeof import('./src/components/request-card-list.vue')['default']
-    PrivateChatUserList: typeof import('./src/components/privateChat-user-list.vue')['default']
+    PrivateChatList: typeof import('./src/components/privateChat-list.vue')['default']
+    PrivateChatUserList: typeof import('./src/components/privateChat-list.vue')['default']
     RequestCardList: typeof import('./src/components/request-card-list.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TeamCardList: typeof import('./src/components/team-card-list.vue')['default']
+    TeamChatList: typeof import('./src/components/teamChat-list.vue')['default']
     UserCardList: typeof import('./src/components/UserCardList.vue')['default']
     VanBackTop: typeof import('vant/es')['BackTop']
     VanBadge: typeof import('vant/es')['Badge']

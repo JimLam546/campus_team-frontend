@@ -56,14 +56,14 @@
     <van-cell icon="flag-o" title="标签">
         <template #value>
             <van-tag v-for="tag in user.tagList" plain style="margin-right: 8px"
-                     type="primary">{{ tag }}
+            type="primary">{{ tag }}
             </van-tag>
         </template>
     </van-cell>
     <div v-if="currentUser.id !== user.id" style="margin: 20px 20px auto 20px; ">
-        <van-button v-if="user.friend" plain block round type="primary" @click="toChat" style="margin-bottom: 10px">私信</van-button>
+        <van-button plain block round type="primary" @click="toChat" style="margin-bottom: 10px">私信</van-button>
         <van-button v-if="!user.friend" block round type="primary" @click="addFriend">添加好友</van-button>
-        <van-button v-else plain block round type="danger" @click="removeFriend">解除好友</van-button>
+        <van-button v-else plain block round type="danger" @click="toRemoveFriend">解除好友</van-button>
     </div>
 
     <van-dialog :show="show" before-close="" show-cancel-button
@@ -85,24 +85,45 @@
 
 <script lang="ts" setup>
 import myAxios from "../libs/axiosRequest.ts";
-import {showFailToast, showSuccessToast} from "vant";
+import {showConfirmDialog, showFailToast, showSuccessToast} from "vant";
 import {onMounted, ref} from "vue";
-import {useRoute} from "vue-router";
-import {getCurrentUser} from "../services/user.ts";
+import {useRoute, useRouter} from "vue-router";
+import {getCurrentUser, removeFriend} from "../services/user.ts";
 
 const user = ref({})
 let route = useRoute();
 const show = ref(false);
 const remark = ref("");
+const router = useRouter();
 const currentUser = ref({});
 const addFriend = async () => {
     show.value = true;
 }
-const removeFriend = async () => {
-    showFailToast("功能待开发....")
+const toRemoveFriend = async () => {
+    showConfirmDialog({
+        title: '警告',
+        message:
+            `确认与 ${user.value.username} 解除好友关系？`,
+    }).then(async () => {
+        // on confirm
+        const res = await removeFriend(route.query.id);
+        if (res?.code === 0) {
+            showSuccessToast("已解除好友关系");
+            user.value.friend = false;
+        } else {
+            showFailToast(res.description);
+        }
+    }).catch(() => {
+        // on cancel
+    });
 }
 const toChat = () => {
-    showFailToast("功能待开发....")
+    router.push({
+        path: "/message/privateMessage",
+        query: {
+            id: route.query.id,
+        }
+    })
 }
 const cancelDialog = () => {
     show.value = false;

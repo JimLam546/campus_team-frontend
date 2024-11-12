@@ -14,3 +14,9 @@ export const getUser = async (id: any) => {
     }
     return null;
 }
+export const getFriendList = async () => {
+    return await myAxios.get("/user/friendList");
+}
+export const removeFriend = async (id: any) => {
+    return await myAxios.postForm("/user/removeFriend", {id: id});
+}

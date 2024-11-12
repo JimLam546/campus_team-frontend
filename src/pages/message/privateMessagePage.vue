@@ -35,7 +35,7 @@
 <script setup>
 import {onMounted, ref, nextTick} from "vue";
 import {getCurrentUser, getUser} from "../../services/user.ts";
-import {useRoute, useRouter} from "vue-router";
+import {onBeforeRouteLeave, useRoute, useRouter} from "vue-router";
 import {showFailToast} from "vant";
 import {getPrivateMessageList} from "../../services/chat.ts";
 
@@ -148,6 +148,19 @@ const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
     state.value.content += html;
 }
 window.showUser = onClickRight;
+let heartbeatTimer = null;
+const startHeartbeat = (ws) => {
+    heartbeatTimer = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send("PING");
+        }
+    }, 10 * 1000); // 30 秒
+}
+const stopHeartbeat = () => {
+    clearInterval(heartbeatTimer);
+    heartbeatTimer = null;
+}
+const reconnection = ref(true);
 const init = async () => {
     await getLoginUser();
     // 建立 WebSocket
@@ -163,26 +176,30 @@ const init = async () => {
         }
         // 解析成 json 对象
         let data = JSON.parse(msg.data);
-        console.log("接收的内容:", data);
+        // console.log("接收的内容:", data);
         createContent(data.fromUser, null, data.text, data.isAdmin, data.createTime);
         nextTick(() => {
             const lastElement = chatRoom.value.lastElementChild
             lastElement.scrollIntoView()
         })
     }
-}
-const startHeartbeat = (ws) => {
-
-    setInterval(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send("PING");
+    //关闭事件
+    ws.onclose = function () {
+        stopHeartbeat();
+        if (reconnection.value) {
+            setTimeout(init, 5000); // 5秒后重连
         }
-    }, 10 * 1000); // 30 秒
+    };
 }
 onMounted(() => {
     getLoginUser();
     getRemoteUser();
     renderPage();
+})
+onBeforeRouteLeave(() => {
+    reconnection.value = false;
+    stopHeartbeat();
+    state.value.ws.close();
 })
 </script>
 
