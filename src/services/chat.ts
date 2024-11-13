@@ -14,3 +14,9 @@ export const getPrivateMessageList = async (toId : any) => {
     }
     return null;
 }
+export const getTeamChatListService = async () => {
+    return await myAxios.get("/chat/teamChatList");
+}
+export const getTeamMessageListService = async (teamId : any) => {
+    return await myAxios.post("/chat/teamChat", {teamId: teamId});
+}

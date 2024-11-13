@@ -33,7 +33,10 @@
                 <van-button plain size="mini" type="primary" @click="writePassword(team)"
                             v-if="!team?.hasJoin && props.active === 'secret'"
                 >加入队伍</van-button>
-                <van-button plain size="mini" @click="updateTeam(team)"
+                <van-button plain size="mini" type="success" @click="toChat(team.id)"
+                            v-if="team?.hasJoin"
+                >进入群聊</van-button>
+                <van-button plain size="mini" type="warning" @click="updateTeam(team)"
                             v-if="currentUser?.id === team?.userId"
                 >更新队伍</van-button>
                 <van-button plain size="mini" type="danger" @click="quitTeam(team)"
@@ -100,6 +103,14 @@ const joinTeam = async (team: teamType) => {
 }
 const updateTeam = (team: teamType) => {
     router.push('/team/update/' + team.id)
+}
+const toChat = (id: number) => {
+    router.push({
+        path: '/message/teamChat?id=',
+        query: {
+            id: id
+        }
+    })
 }
 const quitTeam = async (team: teamType) => {
     const res: resType = await myAxios.post('/team/quit', {teamId: team.id})

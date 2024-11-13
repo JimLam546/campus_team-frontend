@@ -14,7 +14,7 @@
         </van-swipe>
 
         <!--<van-search v-model="searchText" placeholder="请输入搜索关键词" @search="searchUsers"/>-->
-        <van-skeleton v-if="!userList || userList.length < 1">
+        <van-skeleton v-if="!userList || userList.length < 1" >
             <template #template>
                 <div :style="{ display: 'flex', width: '100%' }">
                     <van-skeleton-image/>

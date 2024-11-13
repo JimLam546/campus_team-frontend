@@ -38,9 +38,10 @@
                 <van-icon name="coupon-o" size="30px"/>
             </template>
         </van-grid-item>
-        <van-grid-item icon="photo-o" text="联系客服">
+        <van-grid-item icon="photo-o" text="代码仓库" @click="toRepositories">
             <template #icon>
-                <van-icon name="service-o" size="30px"/>
+                <van-image src="https://gitee.com/assets/favicon.ico" width="30px" />
+                <!--<van-icon name="service-o" size="30px"/>-->
             </template>
         </van-grid-item>
     </van-grid>
@@ -77,6 +78,9 @@ import {useRoute} from "vue-router";
 
 const user = ref({});
 const route = useRoute();
+const toRepositories = () => {
+    window.open("https://gitee.com/jim-lam", "_blank");
+}
 // const toEdit = (editName: string, editKey: string, currentValue: string) => {
 //     router.push({
 //         path: '/user/edit',

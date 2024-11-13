@@ -1,12 +1,12 @@
 <template>
-    <div id="privateMessagePage">
+    <div id="teamChatPage">
         <van-sticky>
             <van-nav-bar
-                    :title="remoteUser.username"
-                    left-arrow
-                    right-text="按钮"
-                    @click-left="left"
-                    @click-right="onClickRight"
+                :title="team.teamName"
+                left-arrow
+                right-text="按钮"
+                @click-left="left"
+                @click-right="onClickRight"
             >
                 <template #right>
                     <van-icon name="ellipsis" size="18px"/>
@@ -17,10 +17,10 @@
             <div ref="chatRoom" class="content" v-html="state.content"></div>
             <van-cell-group inset style="position: fixed;bottom: 0;width: 100%; margin-left: 0">
                 <van-field
-                        v-model="state.text"
-                        center
-                        clearable
-                        placeholder="聊点什么吧...."
+                    v-model="state.text"
+                    center
+                    clearable
+                    placeholder="聊点什么吧...."
                 >
                     <template #button>
                         <van-button size="small" style="margin-right: 0" type="primary" @click="send">发送
@@ -33,22 +33,25 @@
 </template>
 
 <script setup>
-import {onMounted, ref, nextTick} from "vue";
-import {getCurrentUser, getUser} from "../../services/user.ts";
-import {onBeforeRouteLeave, useRoute, useRouter} from "vue-router";
 import {showFailToast} from "vant";
-import {getPrivateMessageList} from "../../services/chat.ts";
+import myAxios from "../../libs/axiosRequest.ts";
+import {onBeforeRouteLeave, useRoute, useRouter} from "vue-router";
+import {ref, onMounted, nextTick} from "vue";
+import {getCurrentUser} from "../../services/user.ts";
+import {getTeamMessageListService} from "../../services/chat.ts";
 
-const route = useRoute();
 const router = useRouter();
-const remoteUser = ref({});
-const chatRoom = ref();
-const currentUser = ref();
+const route = useRoute();
 const state = ref({
     text: "",
     content: "",
     ws: null,
-})
+});
+const chatRoom = ref();
+const TEAM_CHAT = 2;
+const currentUser = ref();
+const team = ref({});
+const messageList = ref([]);
 const getLoginUser = async () => {
     const res = await getCurrentUser();
     if (res) {
@@ -57,33 +60,40 @@ const getLoginUser = async () => {
     }
     showFailToast("获取当前登录用户信息失败");
 }
-const getRemoteUser = async () => {
-    const res = await getUser(route.query.id);
-    if (res) {
-        remoteUser.value = res;
+const getCurrentTeam = async () => {
+    let res = await myAxios.get('/team/get?id=' + route.query.id);
+    if (res.code !== 0) {
+        showFailToast('该队伍不存在');
+    }
+    team.value = res.data;
+}
+// 获取群聊消息
+const getTeamMessage = async () => {
+    const res = await getTeamMessageListService(route.query.id);
+    if (res.code === 0) {
+        messageList.value = res.data;
         return;
     }
-    showFailToast("获取对方信息失败");
+    showFailToast("获取聊天记录失败");
 }
 const left = () => router.back();
 const onClickRight = () => {
     router.push({
-        path: '/user/detail',
+        path: '/team/detail',
         query: {
             id: route.query.id
         }
-    });
+    })
 }
-const PRIVATE_CHAT = 1;
 const send = () => {
     if (!state.value.text.trim()) {
         showFailToast("请输入内容");
         return;
     }
     let message = {
-        toId: route.query.id,
+        teamId: route.query.id,
         text: state.value.text,
-        chatType: PRIVATE_CHAT,
+        chatType: TEAM_CHAT,
         isAdmin: false,
     }
     state.value.ws.send(JSON.stringify(message));
@@ -94,19 +104,9 @@ const send = () => {
         lastElement.scrollIntoView()
     })
 }
-const messageList = ref([]);
-// 获取私聊消息
-const getPrivateMessage = async () => {
-    const res = await getPrivateMessageList(route.query.id);
-    if (res) {
-        messageList.value = res;
-        return;
-    }
-    showFailToast("获取聊天记录失败");
-}
 // 将聊天记录渲染到页面
 const renderPage = async () => {
-    await getPrivateMessage();
+    await getTeamMessage();
     messageList.value.forEach((chat) => {
         if (chat.myMessage) {
             createContent(null, chat.fromUser, chat.text, false, chat.createTime);
@@ -118,6 +118,14 @@ const renderPage = async () => {
     await nextTick();
     const lastElement = chatRoom.value.lastElementChild;
     lastElement.scrollIntoView();
+}
+const showUserDetail = (id) => {
+    router.push({
+        path: '/user/detail',
+        query: {
+            id: id
+        }
+    });
 }
 const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
     // 当前用户消息
@@ -147,7 +155,7 @@ const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
     // console.log("html=", html)
     state.value.content += html;
 }
-window.showUser = onClickRight;
+window.showUser = showUserDetail;
 let heartbeatTimer = null;
 const startHeartbeat = (ws) => {
     heartbeatTimer = setInterval(() => {
@@ -164,7 +172,7 @@ const reconnection = ref(true);
 const init = async () => {
     await getLoginUser();
     // 建立 WebSocket
-    const ws = new WebSocket("ws://localhost:8080/chat/" + `${currentUser.value.id}/NaN`);
+    const ws = new WebSocket("ws://localhost:8080/chat/" + `${currentUser.value.id}/${team.value.id}`);
     state.value.ws = ws;
     ws.onopen = () => {
         // 开启心跳
@@ -192,8 +200,8 @@ const init = async () => {
     };
 }
 onMounted(() => {
+    getCurrentTeam();
     getLoginUser();
-    getRemoteUser();
     renderPage();
 })
 onBeforeRouteLeave(() => {

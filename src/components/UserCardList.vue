@@ -1,43 +1,45 @@
 <template>
+    <div id="userCardList">
+        <van-card
+                v-for="user in props.userList"
+                :desc="!user.profile || user.profile.length < 1 ? '该用户很懒，没有填写简介' : `${user.profile}`"
+                :thumb="user.avatarUrl"
+                :title="`${user.username} (${user.userAccount})`"
+                style="margin: 15px; border-radius: 8%"
+                @click-thumb="showUserDetail(user.id)"
+        >
 
-    <van-card
-        v-for="user in props.userList"
-        :title="`${user.username} (${user.userAccount})`"
-        :thumb="user.avatarUrl"
-        @click-thumb="showUserDetail(user.id)"
-        :desc="!user.profile || user.profile.length < 1 ? '该用户很懒，没有填写简介' : `${user.profile}`"
-        style="margin: 15px; border-radius: 8%"
-    >
+            <template #tags>
+                标签:
+            </template>
 
-        <template #tags>
-            标签:
-        </template>
-
-        <template #bottom>
-            <van-tag v-for="tag in JSON.parse(user.tags)"
-                     plain
-                     type="primary"
-                     style="margin-right: 5px">
-                {{ tag }}
-            </van-tag>
-        </template>
-        <template #footer>
-            <van-button plain size="small" @click="toChat(user.id)">联系我</van-button>
-        </template>
-    </van-card>
+            <template #bottom>
+                <van-tag v-for="tag in JSON.parse(user.tags)"
+                         plain
+                         style="margin-right: 5px"
+                         type="primary">
+                    {{ tag }}
+                </van-tag>
+            </template>
+            <template #footer>
+                <van-button plain size="small" @click="toChat(user.id)">联系我</van-button>
+            </template>
+        </van-card>
+    </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import {useRoute, useRouter} from "vue-router";
 
-interface userCardListProps{
+interface userCardListProps {
     userList: UserType[]
 }
+
 const props = defineProps<userCardListProps>()
 const route = useRoute()
 let router = useRouter()
-const showUserDetail = (id : any) => {
+const showUserDetail = (id: any) => {
     router.push({
         path: '/user/detail',
         query: {
@@ -56,5 +58,4 @@ const toChat = (id) => {
 </script>
 
 <style scoped>
-
 </style>

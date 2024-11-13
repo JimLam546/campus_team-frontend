@@ -123,6 +123,10 @@
       })
   }
   const submitTags = async () => {
+      if (activeIds.value.length < 1) {
+          showFailToast("请设置标签");
+          return;
+      }
       // console.log(JSON.stringify(activeIds.value))
       const res: resType = await myAxios({
           method: 'post',

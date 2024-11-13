@@ -1,7 +1,7 @@
 <template>
     <div id="friendRequestPage">
         <van-empty v-if="mark && requestList.length < 1" description="不存在好友申请" />
-        <van-skeleton v-if="!mark" title :row="3"/>
+        <van-skeleton v-if="!mark" title :row="3" style="margin-top: 30px"/>
         <request-card-list :requestList="requestList"/>
     </div>
 </template>

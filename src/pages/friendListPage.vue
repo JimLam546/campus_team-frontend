@@ -1,7 +1,7 @@
 <template>
     <div id="friendListPage">
         <van-empty v-if="mark && userList.length < 1" description="你还未添加好友" />
-        <van-skeleton v-if="!mark" title avatar :row="5" />
+        <van-skeleton v-if="!mark" title avatar :row="3" style="margin-top: 30px"/>
         <user-card-list :userList="userList" />
     </div>
 </template>

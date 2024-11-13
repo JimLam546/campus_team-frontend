@@ -20,10 +20,11 @@ import CreateTeamListPage from "../pages/team/CreateTeamListPage.vue";
 import JoinTeamListPage from "../pages/team/JoinTeamListPage.vue";
 import MessageIndex from "../pages/message/messagePage.vue";
 import friendRequestPage from "../pages/message/friendRequestPage.vue";
-import privateMessagePage from "../pages/message/privateMessagePage.vue";
-import ChatPage from "../pages/message/teamChatListPage.vue";
+import privateChatPage from "../pages/message/privateChatPage.vue";
 import privateChatUserListPage from "../pages/message/privateChatListPage.vue";
 import friendListPage from "../pages/friendListPage.vue";
+import teamChatListPage from "../pages/message/teamChatListPage.vue";
+import teamChatPage from "../pages/message/teamChatPage.vue";
 
 
 export const routes = [
@@ -50,10 +51,12 @@ export const routes = [
             {path: '/message/friendRequest', title: '好友申请', component: friendRequestPage},
             {path: '/message/privateChatList', title: '私聊用户列表', component: privateChatUserListPage},
             {path: '/user/friendList', title: '我的好友', component: friendListPage},
-            {path: '/message/groupChat', title: '群聊', component: ChatPage},
+            {path: '/message/teamChatList', title: '群聊', component: teamChatListPage},
+            // {path: '/message/groupChat', title: '群聊', component: ChatPage},
         ]
     },
-    {path: '/message/privateMessage', title: '私信', component: privateMessagePage},
+    {path: '/message/privateMessage', title: '私信', component: privateChatPage},
+    {path: '/message/teamChat', title: '私信', component: teamChatPage},
 ]
 
 

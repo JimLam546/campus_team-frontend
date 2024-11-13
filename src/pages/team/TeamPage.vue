@@ -11,7 +11,8 @@
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
             <team-card-list :teamList="teamList" :active="active"/>
         </van-pull-refresh>
-        <van-empty v-if="teamList?.length < 1" description="数据为空"/>
+        <van-skeleton v-if="!mark" title avatar :row="5" style="margin-top: 30px" />
+        <van-empty v-if="teamList?.length < 1 && mark" description="您还没有加入过任何一个队伍"/>
     </div>
 </template>
 
@@ -25,12 +26,16 @@ const teamList = ref<teamType[]>([])
 const searchText = ref('')
 const active = ref('public')
 const refreshing = ref(false);
+const mark = ref(false);
 const onRefresh = async () => {
+    mark.value = false;
     teamList.value = []
     await onTabChange();
     refreshing.value = false
+    mark.value = true;
 }
 const onTabChange = async () => {
+    mark.value = false;
     teamList.value = [];
     if(active.value === 'public') {
         // 公开
@@ -53,6 +58,7 @@ const onTabChange = async () => {
             // console.log('teamList=',res.data)
         }
     }
+    mark.value = true;
     setTeamList(teamList.value)
 }
 const searchTeams = async () => {

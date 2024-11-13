@@ -45,7 +45,7 @@
               <span class="cell-span">私聊用户归档</span>
           </template>
       </van-cell>
-      <van-cell to="/message/groupChat">
+      <van-cell to="/message/teamChatList">
           <template #title>
               <span class="cell-span">队聊</span>
           </template>

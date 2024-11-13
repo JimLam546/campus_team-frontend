@@ -10,7 +10,8 @@
         </van-list>
         <!--<van-empty description="搜索不到相匹配用户" v-if="!userList || userList.length < 1 || !isHasResult"/>-->
     </van-pull-refresh>
-
+    <!--回到顶部-->
+    <van-back-top bottom="60px" right="20px"/>
 
 </template>
 
@@ -57,6 +58,8 @@ const getUserList = async () => {
     });
     if (res?.code !== 0) {
         showFailToast('网络异常')
+        finished.value = true;
+
     }
     if (res?.data.length === 0) {
         isHasResult.value = false;

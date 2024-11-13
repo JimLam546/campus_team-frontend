@@ -122,6 +122,10 @@
       })
   }
   const onSearchUserList = () => {
+      if (activeIds.value.length < 1) {
+          showFailToast("请选择标签");
+          return;
+      }
       router.push({
           path: '/user/list',
           query: {

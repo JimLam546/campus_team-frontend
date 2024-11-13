@@ -1,7 +1,7 @@
 <template>
     <div id="privateChatUserListPage">
         <van-empty v-if="mark && userList.length < 1" description="你还未进行过聊天" />
-        <van-skeleton v-if="!mark" title avatar :row="5" />
+        <van-skeleton v-if="!mark" title avatar :row="3" style="margin-top: 30px"/>
         <private-chat-user-list :userList="userList"/>
     </div>
 </template>

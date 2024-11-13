@@ -1,38 +1,32 @@
 <template>
     <div id="ChatPage">
-        <van-cell-group>
-            <van-cell @click="">
-                <template #title>
-                    title
-                    <!--<span class="cell-span">{{ user.username}}</span>-->
-                </template>
-                <template #label>
-                    label
-                    <!--<span class="cell-span">{{ user.lastMessage }}</span>-->
-                </template>
-                <template #icon>
-                    <van-image src="https://img.zcool.cn/community/01a6095f110b9fa8012066219b67d4.png@1280w_1l_2o_100sh.png"
-                        round width="50" height="50" style="margin-right: 10px"/>
-                    <!--<van-badge v-if="user.unReadNum>0" :content="user.unReadNum" max="99">-->
-                    <!--    <van-image :src="user.avatarUrl || defaultImg" round width="50" height="50"-->
-                    <!--               style="margin-left: 10px"/>-->
-                    <!--</van-badge>-->
-                    <!--<van-badge v-else>-->
-                    <!--    <van-image :src="user.avatarUrl || defaultImg" round width="50" height="50"-->
-                    <!--               style="margin-left: 10px"/>-->
-                    <!--</van-badge>-->
-                </template>
-                <template #value>
-                    value
-                    <!--{{ user.lastMessageDate }}-->
-                </template>
-            </van-cell>
-        </van-cell-group>
+        <van-empty v-if="mark && teamList.length < 1" description="你还未发起过群聊" />
+        <van-skeleton v-if="!mark" title avatar :row="5" style="margin-top: 30px"/>
+        <team-chat-list :teamList="teamList" />
     </div>
 </template>
 
 <script setup lang="ts">
+import TeamChatList from "../../components/teamChat-list.vue";
+import {getTeamChatListService} from "../../services/chat.ts";
+import {onMounted, ref} from "vue";
+import {showFailToast} from "vant";
 
+const mark = ref(false);
+const teamList = ref([]);
+const getTeamChatList = async () => {
+    const res = await getTeamChatListService();
+    mark.value = true;
+    if (res?.code === 0) {
+        teamList.value = res.data;
+        return;
+    }
+
+    showFailToast("获取群聊列表失败");
+}
+onMounted(() => {
+    getTeamChatList();
+})
 </script>
 
 <style scoped>
