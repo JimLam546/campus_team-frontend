@@ -17,9 +17,10 @@
 
     <van-tabbar route @change="">
         <van-tabbar-item icon="home-o" replace to="/index">主页</van-tabbar-item>
-        <van-tabbar-item icon="search" replace to="/team">队伍</van-tabbar-item>
+        <van-tabbar-item icon="friends-o" replace to="/team">队伍</van-tabbar-item>
+        <van-tabbar-item icon="wechat-moments" replace to="/post/index">社区</van-tabbar-item>
         <van-tabbar-item icon="chat-o" replace to="/message">消息</van-tabbar-item>
-        <van-tabbar-item icon="friends-o" replace to="/user">个人</van-tabbar-item>
+        <van-tabbar-item icon="contact-o" replace to="/user">个人</van-tabbar-item>
     </van-tabbar>
 
 

@@ -172,7 +172,7 @@ const reconnection = ref(true);
 const init = async () => {
     await getLoginUser();
     // 建立 WebSocket
-    const ws = new WebSocket("ws://localhost/chat/" + `${currentUser.value.id}/NaN`);
+    const ws = new WebSocket("ws://localhost:8080/chat/" + `${currentUser.value.id}/NaN`);
     state.value.ws = ws;
     ws.onopen = () => {
         // 开启心跳

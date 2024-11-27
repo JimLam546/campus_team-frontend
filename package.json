@@ -19,6 +19,7 @@
     "@types/qs": "^6.9.15",
     "@vant/auto-import-resolver": "^1.1.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "openapi-typescript-codegen": "^0.29.0",
     "typescript": "^5.2.2",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",
