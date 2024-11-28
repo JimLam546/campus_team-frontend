@@ -7,6 +7,7 @@ import type { AddFriendRequest } from '../models/AddFriendRequest';
 import type { AddPostRequest } from '../models/AddPostRequest';
 import type { AddTeamRequest } from '../models/AddTeamRequest';
 import type { BaseResponse_boolean_ } from '../models/BaseResponse_boolean_';
+import type { BaseResponse_CommentVO_ } from '../models/BaseResponse_CommentVO_';
 import type { BaseResponse_int_ } from '../models/BaseResponse_int_';
 import type { BaseResponse_List_ChatMessageVO_ } from '../models/BaseResponse_List_ChatMessageVO_';
 import type { BaseResponse_List_PostVO_ } from '../models/BaseResponse_List_PostVO_';
@@ -2292,6 +2293,50 @@ export class Service {
         });
     }
     /**
+     * deleteComment
+     * @param id id
+     * @returns BaseResponse_boolean_ OK
+     * @throws ApiError
+     */
+    public static deleteCommentUsingGet(
+        id: number,
+    ): CancelablePromise<BaseResponse_boolean_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/post/deleteComment/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * deletePost
+     * @param id id
+     * @returns BaseResponse_boolean_ OK
+     * @throws ApiError
+     */
+    public static deletePostUsingGet(
+        id: number,
+    ): CancelablePromise<BaseResponse_boolean_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/post/deletePost/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
      * liked
      * @param id id
      * @param type type
@@ -2309,6 +2354,22 @@ export class Service {
                 'id': id,
                 'type': type,
             },
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+    /**
+     * listMyPost
+     * @returns BaseResponse_List_PostVO_ OK
+     * @throws ApiError
+     */
+    public static listMyPostUsingGet(): CancelablePromise<BaseResponse_List_PostVO_> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/post/listMyPost',
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
@@ -2340,21 +2401,16 @@ export class Service {
     /**
      * uploadImage
      * @param file file
-     * @param postId postId
      * @returns BaseResponse_string_ OK
      * @returns any Created
      * @throws ApiError
      */
     public static uploadImageUsingPost(
         file?: Blob,
-        postId?: number,
     ): CancelablePromise<BaseResponse_string_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/post/postImage/upload',
-            query: {
-                'postId': postId,
-            },
             formData: {
                 'file': file,
             },
@@ -2368,13 +2424,13 @@ export class Service {
     /**
      * publishComment
      * @param addCommentRequest addCommentRequest
-     * @returns BaseResponse_boolean_ OK
+     * @returns BaseResponse_CommentVO_ OK
      * @returns any Created
      * @throws ApiError
      */
     public static publishCommentUsingPost(
         addCommentRequest: AddCommentRequest,
-    ): CancelablePromise<BaseResponse_boolean_ | any> {
+    ): CancelablePromise<BaseResponse_CommentVO_ | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/post/publishComment',

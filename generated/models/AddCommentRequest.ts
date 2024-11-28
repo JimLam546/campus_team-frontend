@@ -6,6 +6,5 @@ export type AddCommentRequest = {
     content?: string;
     parentId?: number;
     postId?: number;
-    userId?: number;
 };
 

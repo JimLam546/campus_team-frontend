@@ -55,6 +55,11 @@
   <!--        <van-icon name="user-circle-o" size="20" style="margin-right: 5px" color="#1989fa"/>-->
   <!--    </template>-->
   <!--</van-cell>-->
+    <van-cell :center="true" is-link style="padding: 20px" title="我的发布" to="/myPost">
+        <template #icon>
+            <van-icon color="#1989fa" name="comment-o" size="20" style="margin-right: 5px"/>
+        </template>
+    </van-cell>
     <van-cell :center="true" is-link style="padding: 20px" title="个人信息" to="/user/sign">
         <template #icon>
             <van-icon color="#1989fa" name="setting-o" size="20" style="margin-right: 5px"/>

@@ -12,6 +12,7 @@ export type { AddFriendRequest } from './models/AddFriendRequest';
 export type { AddPostRequest } from './models/AddPostRequest';
 export type { AddTeamRequest } from './models/AddTeamRequest';
 export type { BaseResponse_boolean_ } from './models/BaseResponse_boolean_';
+export type { BaseResponse_CommentVO_ } from './models/BaseResponse_CommentVO_';
 export type { BaseResponse_int_ } from './models/BaseResponse_int_';
 export type { BaseResponse_List_ChatMessageVO_ } from './models/BaseResponse_List_ChatMessageVO_';
 export type { BaseResponse_List_PostVO_ } from './models/BaseResponse_List_PostVO_';

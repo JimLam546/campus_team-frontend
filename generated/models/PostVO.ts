@@ -9,7 +9,7 @@ export type PostVO = {
     content?: string;
     createTime?: string;
     id?: number;
-    imageUrl?: string;
+    imageUrl?: Array<string>;
     likedNum?: number;
     module?: string;
     myLiked?: boolean;

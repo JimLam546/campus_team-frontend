@@ -1,6 +1,6 @@
 <template>
     <div id="postShowPage">
-        <van-button class="btn_createTeam" icon="records-o" to="" type="primary"></van-button>
+        <van-button class="btn_createTeam" icon="records-o" to="/post/publish" type="primary"></van-button>
         <van-pull-refresh v-model="loading" @refresh="refresh">
 
             <div style="height: 10px; width: 100%; background-color: #F7F7F7"></div>
@@ -12,14 +12,22 @@
                     @load="onLoad"
             >
                 <div v-for="post in postList" :key="post.id" class="postContain">
-                    <div class="image" @click="toUserDetail(post.userVO.id)">
+                    <div class="image">
                         <img :alt=post.userVO.username :src=post.userVO.avatarUrl class="avatar"
-                             onclick="showUser(${remoteUser.id})">
+                             @click="toUserDetail(post.userVO.id)">
                     </div>
                     <div class="content">
-                        <div class="postUsername">
-                            <span style="color: #576BB0; font-size: 16px;">{{ post.userVO.username }}</span><span
-                                style="color: #9999A6; font-size: 13px;"> · {{ timeAgo(post.createTime) }}</span>
+                        <div class="usernameContain" style="display: flex; justify-content: space-between">
+                            <div class="postUsername">
+                                <span style="color: #576BB0; font-size: 16px;">{{ post.userVO.username }}</span><span
+                                    style="color: #9999A6; font-size: 13px;"> · {{ timeAgo(post.createTime) }}</span>
+                            </div>
+                            <div @click="showDelete(post.id)">
+                                <span v-if="post.userVO.id === currentUser.id"
+                                      style="font-size: 13px; color: red; display: block; margin-top: 15px">删除</span>
+                            </div>
+                            <van-dialog v-model:show="showDeleteDialog" message="是否确认删除该帖子?" show-cancel-button
+                                        title="警告" @confirm="deletePost"></van-dialog>
                         </div>
                         <div class="postContent">
                             <span style="width: 70%; font-size: 17px">{{ post.content }}</span>
@@ -33,7 +41,7 @@
                             <span id="module" style="color: #576B94; font-size: 13px">#{{ post.module }}</span>
                         </div>
                         <div class="button">
-                            <div v-if="!postList[postList.indexOf(post)].isLiked" id="liked"
+                            <div v-if="!postList[postList.indexOf(post)].myLiked" id="liked"
                                  @click="liked(post, POST_TYPE, null)">
                                 <van-icon name="good-job-o" size="20px"/>
                                 <span v-if="postList[postList.indexOf(post)].likedNum < 1"
@@ -44,10 +52,28 @@
                                 <van-icon color="#1989FA" name="good-job" size="20px"/>
                                 <span style="margin-left: 5px">{{ post.likedNum }}</span>
                             </div>
-                            <div id="toComment" @click="show = true">
+                            <!--<div id="toComment" @click="toPublish(post)">-->
+                            <van-button plain round type="primary" @click="toPublish(post)">
                                 <van-icon name="edit" size="20px"/>
                                 <span>评论</span>
-                            </div>
+                            </van-button>
+                            <!--评论弹窗-->
+                            <van-dialog v-model:show="showComment" show-cancel-button title="评论"
+                                        @cancel="cancel" @confirm="publishComment">
+                                <van-cell-group inset>
+                                    <van-field
+                                        v-model="commentContent"
+                                        autosize
+                                        label="评论内容"
+                                        maxlength="50"
+                                        placeholder="请输入评论"
+                                        rows="1"
+                                        show-word-limit
+                                        type="textarea"
+                                    />
+                                </van-cell-group>
+                            </van-dialog>
+                            <!--</div>-->
                         </div>
                     </div>
 
@@ -82,24 +108,9 @@
                                     postList[postList.indexOf(post)].commentVOList[postList[postList.indexOf(post)].commentVOList.indexOf(comment)].likedNum
                                     }}</span>
                             </div>
-                        </div>
 
-                        <!--评论弹窗-->
-                        <van-dialog v-model:show="show" title="评论" show-cancel-button
-                                    @cancel="cancel" @confirm="publishComment(post)">
-                            <van-cell-group inset>
-                                <van-field
-                                    v-model="commentContent"
-                                    rows="1"
-                                    autosize
-                                    label="评论内容"
-                                    type="textarea"
-                                    maxlength="50"
-                                    placeholder="请输入评论"
-                                    show-word-limit
-                                />
-                            </van-cell-group>
-                        </van-dialog>
+
+                        </div>
                     </div>
                 </div>
             </van-list>
@@ -110,25 +121,37 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {Service} from "../../../generated";
-import {showFailToast, showImagePreview} from "vant";
+import {showFailToast, showImagePreview, showSuccessToast} from "vant";
 import {useRouter} from "vue-router";
 
 const POST_TYPE = 1;
 const COMMENT_TYPE = 2;
 const loading = ref(false);
 const listLoading = ref(false);
-const show = ref(false);
+const showComment = ref(false);
 const postList = ref([]);
 const commentContent = ref("");
 const router = useRouter();
+const currentPost = ref();
+const deletePostId = ref();
+const showDeleteDialog = ref(false);
 const pageRequest = ref({
     pageNum: 0,
     pageSize: 10,
 });
-const publishComment = async (post) => {
-    const res = await Service.publishCommentUsingPost({postId: post.id, content: commentContent.value});
-    if (res.data == true) {
-        post.commentVOList.push(res.data);
+const currentUser = ref({});
+const toPublish = (post) => {
+    console.log("第一步");
+    showComment.value = true;
+    currentPost.value = post;
+    console.log("第一步结束")
+}
+const publishComment = async () => {
+    const res = await Service.publishCommentUsingPost({postId: currentPost.value.id, content: commentContent.value});
+    if (res.code === 0) {
+        postList.value[postList.value.indexOf(currentPost.value)].commentVOList.push(res.data);
+        // postList.value[currentPost.value].commentVOList.push(res.data);
+        // currentPost.value.commentVOList.push(res.data);
         return;
     }
     showFailToast("评论失败");
@@ -145,16 +168,17 @@ const toUserDetail = (userId) => {
         path: '/user/detail',
         query: {
             id: userId
-        }})
+        }
+    })
 }
 const onLoad = async () => {
     pageRequest.value.pageNum++;
-    console.log(pageRequest.value.pageNum);
     await getPostList();
     listLoading.value = false;
 }
 const cancel = () => {
     commentContent.value = "";
+    // showComment.value = false;
 }
 const getPostList = async () => {
     const res = await Service.listPostUsingPost(pageRequest.value);
@@ -165,21 +189,24 @@ const getPostList = async () => {
     for (let i = 0; i < res.data.length; i++) {
         postList.value.push(res.data[i]);
     }
-    console.log(postList.value)
 }
 const liked = async (post, type, comment) => {
-    const res = await Service.likedUsingGet(post.id, type);
-    if (res.code === 0) {
-        if (type === POST_TYPE) {
-            // 帖子
-            postList.value[postList.value.indexOf(post)].isLiked = res.data;
+    if (type === POST_TYPE) {
+        // 帖子
+        const res = await Service.likedUsingGet(post.id, type);
+        if (res.code === 0) {
+            postList.value[postList.value.indexOf(post)].myLiked = res.data;
             if (res.data === true) {
                 postList.value[postList.value.indexOf(post)].likedNum++;
             } else {
                 postList.value[postList.value.indexOf(post)].likedNum--;
             }
-        } else {
-            // 评论
+        }
+        return;
+    } else {
+        // 评论
+        const res = await Service.likedUsingGet(comment.id, type);
+        if (res.code === 0) {
             // console.log("123", postList.value[postList.value.indexOf(post)].commentVOList[postList.value[postList.value.indexOf(post)].commentVOList.indexOf(comment)].myLiked)
             postList.value[postList.value.indexOf(post)].commentVOList[postList.value[postList.value.indexOf(post)].commentVOList.indexOf(comment)].myLiked = res.data;
             if (res.data === true) {
@@ -190,10 +217,30 @@ const liked = async (post, type, comment) => {
         }
         return;
     }
-    showFailToast("网络异常");
+}
+const deletePost = async () => {
+    const res = await Service.deletePostUsingGet(deletePostId.value);
+    if (res.code === 0) {
+        location.reload();
+        showSuccessToast("删除成功");
+        return;
+    }
+    showFailToast("删除失败");
+}
+const getCurrentUser = async () => {
+    const res = await Service.getCurrentUserUsingGet();
+    if (res.code === 0) {
+        currentUser.value = res.data;
+        return;
+    }
+    showFailToast("获取登录用户失败");
+}
+const showDelete = (postId) => {
+    deletePostId.value = postId;
+    showDeleteDialog.value = true;
 }
 onMounted(() => {
-    // getPostList();
+    getCurrentUser();
 })
 const timeAgo = (dateTimeStamp) => {
     let result = "";

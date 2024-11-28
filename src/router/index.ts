@@ -26,6 +26,8 @@ import friendListPage from "../pages/friendListPage.vue";
 import teamChatListPage from "../pages/message/teamChatListPage.vue";
 import teamChatPage from "../pages/message/teamChatPage.vue";
 import postShowPage from "../pages/post/postShowPage.vue";
+import createPostPage from "../pages/post/createPostPage.vue";
+import myPostPublishPage from "../pages/post/myPostPublishPage.vue";
 
 
 export const routes = [
@@ -54,6 +56,8 @@ export const routes = [
             {path: '/user/friendList', title: '我的好友', component: friendListPage},
             {path: '/message/teamChatList', title: '群聊', component: teamChatListPage},
             {path: '/post/index', title: '社区', component: postShowPage},
+            {path: '/post/publish', title: '发帖', component: createPostPage},
+            {path: '/myPost', title: '我的发布', component: myPostPublishPage},
         ]
     },
     {path: '/message/privateMessage', title: '私信', component: privateChatPage},

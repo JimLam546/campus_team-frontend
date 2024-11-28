@@ -14,7 +14,7 @@
             </van-nav-bar>
         </van-sticky>
         <div class="chat-container">
-            <div ref="chatRoom" class="content" v-html="state.content"></div>
+            <div ref="chatRoom" id="chatContent" v-html="state.content"></div>
             <van-cell-group inset style="position: fixed;bottom: 0;width: 100%; margin-left: 0">
                 <van-field
                     v-model="state.text"
@@ -135,7 +135,7 @@ const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
         html = `
     <div class="message self">
     <div class="myInfo info">
-      <img :alt=${nowUser.username} class="avatar" onclick="showUser(${nowUser.id})" src=${nowUser.avatarUrl}>
+      <img :alt=${nowUser.username} class="chatAvatar" onclick="showUser(${nowUser.id})" src=${nowUser.avatarUrl}>
     </div>
       <p class="text">${text}</p>
     </div>
@@ -144,7 +144,7 @@ const createContent = (remoteUser, nowUser, text, isAdmin, createTime) => {
         // remoteUser表示远程用户聊天消息，灰色的气泡
         html = `
      <div class="message other">
-      <img :alt=${remoteUser.username} class="avatar" onclick="showUser(${remoteUser.id})" src=${remoteUser.avatarUrl}>
+      <img :alt=${remoteUser.username} class="chatAvatar" onclick="showUser(${remoteUser.id})" src=${remoteUser.avatarUrl}>
     <div class="info">
       <span class="username">${remoteUser.username.length < 10 ? remoteUser.username : remoteUser.username}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${createTime}</span>
       <p class="${isAdmin ? 'admin text' : 'text'}" >${text}</p>
@@ -172,7 +172,8 @@ const reconnection = ref(true);
 const init = async () => {
     await getLoginUser();
     // 建立 WebSocket
-    const ws = new WebSocket("ws://localhost:8080/chat/" + `${currentUser.value.id}/${team.value.id}`);
+    const ws = new WebSocket("ws://47.115.163.154:8080/chat/" + `${currentUser.value.id}/${team.value.id}`);
+    // const ws = new WebSocket("ws://localhost:8080/chat/" + `${currentUser.value.id}/${team.value.id}`);
     state.value.ws = ws;
     ws.onopen = () => {
         // 开启心跳
@@ -226,7 +227,7 @@ onBeforeRouteLeave(() => {
     margin: 10px 10px;
 }
 
-.content {
+#chatContent {
     padding-top: 22px;
     padding-bottom: 57px;
     display: flex;
@@ -237,7 +238,7 @@ onBeforeRouteLeave(() => {
     align-self: flex-end;
 }
 
-.avatar {
+.chatAvatar {
     align-self: flex-start;
     width: 35px;
     height: 35px;
